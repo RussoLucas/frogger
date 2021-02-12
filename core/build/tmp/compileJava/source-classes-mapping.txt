@@ -1,2 +1,4 @@
+com/frogger/game/Frog.java
+ com.frogger.game.Frog
 com/frogger/game/FroggerGame.java
  com.frogger.game.FroggerGame
