@@ -9,14 +9,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class FroggerGame extends ApplicationAdapter {
+
 	SpriteBatch batch;
 	private Frog frog;
+	private RestGround restGround;
+	private FinishLine finishLine;
 	private int lastKeyPressed;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		frog = new Frog();
+		restGround = new RestGround();
+		finishLine = new FinishLine();
 	}
 
 	@Override
@@ -25,6 +30,12 @@ public class FroggerGame extends ApplicationAdapter {
 
 		batch.begin();
 
+		batch.draw(restGround.getRestGround(),0,0);
+		batch.draw(restGround.getRestGround(),350,0);
+		batch.draw(restGround.getRestGround(),0,355);
+		batch.draw(restGround.getRestGround(),350,355);
+
+		batch.draw(finishLine.getFinishLine(), 0,650);
 		whichKeyPressed();//verifica a tecla pressionada pelo usuário e atualiza a posição no eixo x ou y do sapo
 
 		frog.verifyFrogPosition(); //alterar depois. Recomendado que a classe render nao tenha responsabilidades que nao relacionadas a de renderização de elementos na tela

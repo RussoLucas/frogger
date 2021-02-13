@@ -43,12 +43,12 @@ public class Frog {
     }
 
     public void updateFrogPositionXToLeft(){
-        this.frogPositionX = this.frogPositionX - 70;
+        this.frogPositionX = this.frogPositionX - 60;
     }
 
 
     public void updateFrogPositionXToRight(){
-        this.frogPositionX = this.frogPositionX + 70;
+        this.frogPositionX = this.frogPositionX + 60;
     }
 
     public void updateFrogPositionYToDown(){
@@ -68,8 +68,8 @@ public class Frog {
 
         if(frogPositionY <= 0){
             this.frogPositionY = 0;
-        }else if(frogPositionY > 560){
-            this.frogPositionY = 560;
+        }else if(frogPositionY > 660){
+            this.frogPositionY = 660;
         }
     }
 

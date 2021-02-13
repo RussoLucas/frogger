@@ -1,3 +1,7 @@
+com/frogger/game/RestGround.java
+ com.frogger.game.RestGround
+com/frogger/game/FinishLine.java
+ com.frogger.game.FinishLine
 com/frogger/game/Frog.java
  com.frogger.game.Frog
 com/frogger/game/FroggerGame.java
