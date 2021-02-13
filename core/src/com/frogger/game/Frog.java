@@ -4,6 +4,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import static java.lang.Boolean.*;
+
 public class Frog {
     private Texture frogImg;
     private TextureRegion frogSpriteDown;
@@ -14,6 +16,7 @@ public class Frog {
     private int frogPositionY;
     private int frogWidth;
     private int frogHeight;
+    private boolean touchFinishLine;
 
     public Frog(){
         this.frogWidth = 40;
@@ -27,6 +30,8 @@ public class Frog {
 
         this.frogPositionX = 0;
         this.frogPositionY = 0;
+
+        this.touchFinishLine = FALSE;
     }
 
     public TextureRegion getFrogSprite(int lastKeyPressed) {
@@ -73,11 +78,39 @@ public class Frog {
         }
     }
 
+    public boolean isTouchFinishLine() {
+        if(this.frogPositionY > 600){
+            this.touchFinishLine = TRUE;
+            return touchFinishLine;
+        }
+        this.touchFinishLine = FALSE;
+        return touchFinishLine;
+    }
+
     public int getFrogPositionX() {
         return frogPositionX;
+    }
+
+    public void setFrogPositionX(int frogPositionX) {
+        this.frogPositionX = frogPositionX;
+    }
+
+    public void setFrogPositionY(int frogPositionY) {
+        this.frogPositionY = frogPositionY;
     }
 
     public int getFrogPositionY() {
         return frogPositionY;
     }
+
+    public TextureRegion getFrogSpriteDown() {
+        return frogSpriteDown;
+    }
+
+    public void setTouchFinishLine(boolean touchFinishLine) {
+        this.touchFinishLine = touchFinishLine;
+    }
+
+
+
 }

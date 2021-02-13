@@ -1,8 +1,10 @@
+com/frogger/game/Frog.java
+ com.frogger.game.Frog
 com/frogger/game/RestGround.java
  com.frogger.game.RestGround
 com/frogger/game/FinishLine.java
  com.frogger.game.FinishLine
-com/frogger/game/Frog.java
- com.frogger.game.Frog
+com/frogger/game/WinnerFrogs.java
+ com.frogger.game.WinnerFrogs
 com/frogger/game/FroggerGame.java
  com.frogger.game.FroggerGame
