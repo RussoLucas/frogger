@@ -2,7 +2,7 @@ package com.frogger.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.frogger.game.FroggerGame;
+import com.frogger.game.screens.FroggerGame;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
