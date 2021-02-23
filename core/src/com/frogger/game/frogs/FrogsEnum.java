@@ -1,6 +1,6 @@
 package com.frogger.game.frogs;
 
-public enum FrogsEnum { FROG_WIDTH(40), FROG_HEIGHT(40);
+public enum FrogsEnum { FROG_WIDTH(40), FROG_HEIGHT(30);
 
     private int value;
 

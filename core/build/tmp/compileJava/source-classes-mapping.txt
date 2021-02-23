@@ -1,16 +1,18 @@
 com/frogger/game/components/FinishLine.java
  com.frogger.game.components.FinishLine
-com/frogger/game/components/RestGround.java
- com.frogger.game.components.RestGround
-com/frogger/game/frogs/FrogsEnum.java
- com.frogger.game.frogs.FrogsEnum
-com/frogger/game/frogs/WinnerFrogs.java
- com.frogger.game.frogs.WinnerFrogs
-com/frogger/game/rectangles/FrogRectangle.java
- com.frogger.game.rectangles.FrogRectangle
-com/frogger/game/frogs/Frog.java
- com.frogger.game.frogs.Frog
 com/frogger/game/cars/Car.java
  com.frogger.game.cars.Car
+com/frogger/game/frogs/Frog.java
+ com.frogger.game.frogs.Frog
+com/frogger/game/components/RestGround.java
+ com.frogger.game.components.RestGround
+com/frogger/game/rectangles/FrogRectangle.java
+ com.frogger.game.rectangles.FrogRectangle
+com/frogger/game/frogs/WinnerFrogs.java
+ com.frogger.game.frogs.WinnerFrogs
+com/frogger/game/frogs/FrogsEnum.java
+ com.frogger.game.frogs.FrogsEnum
+com/frogger/game/components/Water.java
+ com.frogger.game.components.Water
 com/frogger/game/screens/FroggerGame.java
  com.frogger.game.screens.FroggerGame

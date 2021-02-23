@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.awt.*;
+import java.util.Random;
 
 public class Car {
     private Texture imgCar;
@@ -13,14 +14,21 @@ public class Car {
     private TextureRegion greenCar;
     private TextureRegion yellowCar;
 
+
+    private int colorCar;
+
     private Rectangle car;
 
     private static long lastCarTime;
 
-    public Car(){
+    public Car(int yPosition){
         car = new Rectangle();
+        car.y = yPosition;
         car.width = 60;
         car.height = 40;
+
+        Random rand = new Random();
+        int colorCar = rand.nextInt(3) + 1;
 
         imgCar = new Texture("cars.png");
 
@@ -31,8 +39,8 @@ public class Car {
         lastCarTime = TimeUtils.nanoTime();
     }
 
-    public TextureRegion getImgCar() {
-        return yellowCar;
+    public TextureRegion getRandomImgCar() {
+        return blueCar;
     }
     public Rectangle getCar(){ return car; }
     public static long getLastCarTime() {

@@ -18,19 +18,19 @@ public class Frog {
     private TextureRegion frogSpriteLeft;
 
     private Sound froggerHop;
-    private Sound froggerSquash;
+    private Sound froggerPlunk;
 
     public Frog(){
 
         this.froggerHop = Gdx.audio.newSound(Gdx.files.internal("sounds/sound-frogger-hop.wav"));
-        this.froggerSquash = Gdx.audio.newSound(Gdx.files.internal("sounds/sound-frogger-squash.wav"));
+        this.froggerPlunk = Gdx.audio.newSound(Gdx.files.internal("sounds/sound-frogger-plunk.wav"));
 
         this.frogImg = new Texture("frog.png");
 
-        this.frogSpriteUp = new TextureRegion(frogImg,50,150,FROG_WIDTH.getValue(),FROG_HEIGHT.getValue());
-        this.frogSpriteDown = new TextureRegion(frogImg,50,0,FROG_WIDTH.getValue(),FROG_HEIGHT.getValue());
-        this.frogSpriteLeft = new TextureRegion(frogImg,50,50,FROG_WIDTH.getValue(),FROG_HEIGHT.getValue());
-        this.frogSpriteRight = new TextureRegion(frogImg,50,100,FROG_WIDTH.getValue(),FROG_HEIGHT.getValue());
+        this.frogSpriteUp = new TextureRegion(frogImg,50,150,40,40);
+        this.frogSpriteDown = new TextureRegion(frogImg,50,0,40,40);
+        this.frogSpriteLeft = new TextureRegion(frogImg,50,50,40,40);
+        this.frogSpriteRight = new TextureRegion(frogImg,50,100,40,40);
 
     }
 
@@ -51,6 +51,6 @@ public class Frog {
      }
 
      public void soundFroggerSquash(){
-        froggerSquash.play(0.4f);
+        froggerPlunk.play(0.1f);
      }
 }

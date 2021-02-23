@@ -7,11 +7,13 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.frogger.game.cars.Car;
 import com.frogger.game.components.FinishLine;
+import com.frogger.game.components.Water;
 import com.frogger.game.frogs.Frog;
 import com.frogger.game.components.RestGround;
 import com.frogger.game.frogs.WinnerFrogs;
@@ -32,14 +34,13 @@ public class FroggerGame extends ApplicationAdapter {
 	private RestGround restGround;
 	private FinishLine finishLine;
 
+	private TextureRegion carSprite;
 	private Array<Car> carList;
-	private Array<Car> carList2;
-	private Array<Car> carList3;
-	private Array<Car> carList4;
-	private Array<Car> carList5;
 
 
 	private Music froggerMusic;
+
+	private Water water;
 
 	private int lastKeyPressed;
 	private int winnerController;
@@ -53,12 +54,7 @@ public class FroggerGame extends ApplicationAdapter {
 
 		this.frogRectangle = new FrogRectangle();
 
-		froggerMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/frogger-music.wav"));
-
-		froggerMusic.play();
-		froggerMusic.setVolume(0.4f);
-		froggerMusic.setLooping(true);
-		froggerMusic.play();
+//		playMusic();
 
 		batch = new SpriteBatch();
 
@@ -69,23 +65,12 @@ public class FroggerGame extends ApplicationAdapter {
 		frog = new Frog();
 
 		carList = new Array<Car>();
-		carList.add(new Car());
-
-		carList2 = new Array<Car>();
-		carList2.add(new Car());
-
-		carList3 = new Array<Car>();
-		carList3.add(new Car());
-
-		carList4 = new Array<Car>();
-		carList4.add(new Car());
-
-		carList5 = new Array<Car>();
-		carList5.add(new Car());
+		carList.add(new Car(60));
 
 		winnerFrogs = new WinnerFrogs();
 		restGround = new RestGround();
 		finishLine = new FinishLine();
+		water = new Water();
 
 		this.winnerController = 0;
 		this.lifes = 5;
@@ -105,13 +90,11 @@ public class FroggerGame extends ApplicationAdapter {
 		batch.draw(restGround.getRestGround(),0,355);
 		batch.draw(restGround.getRestGround(),350,355);
 
+		batch.draw(water.getImgWater(),water.getWater().x,water.getWater().y,water.getWater().width,water.getWater().height);
+
 		batch.draw(finishLine.getFinishLine(), 0,650);
 
-		renderCarsQueue(60, carList,7);
-		renderCarsQueue(120,carList2,5);
-		renderCarsQueue(180,carList3,4);
-		renderCarsQueue(240,carList4,6);
-		renderCarsQueue(300,carList5,9);
+		renderCarsQueue(7);
 
 		whichKeyPressed();
 
@@ -121,15 +104,17 @@ public class FroggerGame extends ApplicationAdapter {
 
 		frogRectangle.verifyFrogPosition();
 
+		isInWater();
+
 		if(isFrogInFinishLine()){
 
 			frogRectangle.setFrogRectangleX(300);
 
 			frogRectangle.setFrogRectangleY(0);
 
-			batch.draw(frog.getFrogSprite(lastKeyPressed),frogRectangle.getFrogRectangleX(),frogRectangle.getFrogRectangleY());
+			batch.draw(frog.getFrogSprite(lastKeyPressed),frogRectangle.getFrogRectangleX(),frogRectangle.getFrogRectangleY(),40,40);
 		}else{
-			batch.draw(frog.getFrogSprite(lastKeyPressed),frogRectangle.getFrogRectangleX(),frogRectangle.getFrogRectangleY());
+			batch.draw(frog.getFrogSprite(lastKeyPressed),frogRectangle.getFrogRectangleX(),frogRectangle.getFrogRectangleY(),40,40);
 		};
 
 		if(this.winnerController == 5){
@@ -181,19 +166,20 @@ public class FroggerGame extends ApplicationAdapter {
 		return FALSE;
 	}
 
-	private void renderCarsQueue(int yPosition, Array<Car> carList, int speed){
-
+	private void renderCarsQueue(int speed){
 
 		for(Car car : carList){
-			batch.draw(carList.first().getImgCar(), car.getCar().x,car.getCar().y);
+			batch.draw(car.getRandomImgCar(), car.getCar().x,car.getCar().y);
 		}
 
-		if(TimeUtils.nanoTime() - Car.getLastCarTime()> 2000000000){
-			carList.add(new Car());
-			carList2.add(new Car());
-			carList3.add(new Car());
-			carList4.add(new Car());
-			carList5.add(new Car());
+		int possibleInitialPositionsY[] = new int[] {60, 120, 180, 240, 300 };
+
+		Random random = new Random();
+
+		int ind = random.nextInt(possibleInitialPositionsY.length);
+
+		if(TimeUtils.nanoTime() - Car.getLastCarTime()> 300000000){
+			carList.add(new Car(possibleInitialPositionsY[ind]));
 		}
 
 		Iterator<Car> iter = carList.iterator();
@@ -202,14 +188,13 @@ public class FroggerGame extends ApplicationAdapter {
 			Car car = iter.next();
 
 			car.getCar().x += speed;
-			car.getCar().y = yPosition;
 
 			if(car.getCar().x > 700){
 				iter.remove();
 			}
 
 			if(car.getCar().intersects(frogRectangle.getFrog())) {
-				lifes--;
+
 				//teste
 				System.out.println(lifes);
 
@@ -218,11 +203,40 @@ public class FroggerGame extends ApplicationAdapter {
 
 				batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY());
 
-				if (lifes == 0) {
+				if (lifes <= 0) {
 					//adicionar chamada da tela de jogar novamente
-					//Gdx.app.exit();
+//					Gdx.app.exit();
 				}
+
+				lifes--;
 			}
 		}
+	}
+	public void isInWater(){
+		if(frogRectangle.getFrog().intersects(water.getWater())){
+			frog.soundFroggerSquash();
+			frogRectangle.setFrogRectangleY(0);
+			batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY());
+
+			System.out.println("afundou");
+
+			System.out.println(lifes);
+
+			if(lifes <= 0){
+//				Gdx.app.exit();
+			}
+
+			lifes--;
+
+
+		}
+	}
+
+	public void playMusic(){
+		froggerMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/frogger-music.wav"));
+		froggerMusic.play();
+		froggerMusic.setVolume(0.4f);
+		froggerMusic.setLooping(true);
+		froggerMusic.play();
 	}
 }
