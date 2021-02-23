@@ -1,5 +1,7 @@
 package com.frogger.game.frogs;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,6 +15,7 @@ public class WinnerFrogs {
     private Texture frogImg;
     private TextureRegion frogWinnerSprite;
     private int winnersPositionY;
+
 
     public WinnerFrogs(){
         batch = new SpriteBatch();

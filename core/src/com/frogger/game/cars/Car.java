@@ -2,7 +2,6 @@ package com.frogger.game.cars;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.awt.*;
@@ -20,8 +19,6 @@ public class Car {
 
     public Car(){
         car = new Rectangle();
-        car.x = -10;
-        car.y = 60;
         car.width = 60;
         car.height = 40;
 
@@ -37,10 +34,7 @@ public class Car {
     public TextureRegion getImgCar() {
         return yellowCar;
     }
-    public Rectangle getCar(){
-        return car;
-    }
-
+    public Rectangle getCar(){ return car; }
     public static long getLastCarTime() {
         return lastCarTime;
     }

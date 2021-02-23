@@ -1,9 +1,10 @@
 package com.frogger.game.screens;
 
-import java.util.Random;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
@@ -17,6 +18,7 @@ import com.frogger.game.frogs.WinnerFrogs;
 import com.frogger.game.rectangles.FrogRectangle;
 
 import java.util.Iterator;
+import java.util.Random;
 
 import static java.lang.Boolean.*;
 
@@ -29,7 +31,15 @@ public class FroggerGame extends ApplicationAdapter {
 	private WinnerFrogs winnerFrogs;
 	private RestGround restGround;
 	private FinishLine finishLine;
-	private Array<Car> carListFirstQueue;
+
+	private Array<Car> carList;
+	private Array<Car> carList2;
+	private Array<Car> carList3;
+	private Array<Car> carList4;
+	private Array<Car> carList5;
+
+
+	private Music froggerMusic;
 
 	private int lastKeyPressed;
 	private int winnerController;
@@ -43,6 +53,13 @@ public class FroggerGame extends ApplicationAdapter {
 
 		this.frogRectangle = new FrogRectangle();
 
+		froggerMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/frogger-music.wav"));
+
+		froggerMusic.play();
+		froggerMusic.setVolume(0.4f);
+		froggerMusic.setLooping(true);
+		froggerMusic.play();
+
 		batch = new SpriteBatch();
 
 		camera = new OrthographicCamera();
@@ -51,8 +68,20 @@ public class FroggerGame extends ApplicationAdapter {
 
 		frog = new Frog();
 
-		carListFirstQueue = new Array<Car>();
-		carListFirstQueue.add(new Car());
+		carList = new Array<Car>();
+		carList.add(new Car());
+
+		carList2 = new Array<Car>();
+		carList2.add(new Car());
+
+		carList3 = new Array<Car>();
+		carList3.add(new Car());
+
+		carList4 = new Array<Car>();
+		carList4.add(new Car());
+
+		carList5 = new Array<Car>();
+		carList5.add(new Car());
 
 		winnerFrogs = new WinnerFrogs();
 		restGround = new RestGround();
@@ -65,7 +94,6 @@ public class FroggerGame extends ApplicationAdapter {
 	@Override
 	public void render () {
 		ScreenUtils.clear(0, 0, 0, 0);
-
 		camera.update();
 
 		batch.setProjectionMatrix(camera.combined);
@@ -79,52 +107,24 @@ public class FroggerGame extends ApplicationAdapter {
 
 		batch.draw(finishLine.getFinishLine(), 0,650);
 
+		renderCarsQueue(60, carList,7);
+		renderCarsQueue(120,carList2,5);
+		renderCarsQueue(180,carList3,4);
+		renderCarsQueue(240,carList4,6);
+		renderCarsQueue(300,carList5,9);
 
-		for(Car car : carListFirstQueue){
-			batch.draw(carListFirstQueue.first().getImgCar(), car.getCar().x,car.getCar().y);
-		}
-
-		whichKeyPressed();//verifica a tecla pressionada pelo usuário e atualiza a posição no eixo x ou y do sapo
-
-		if(TimeUtils.nanoTime() - Car.getLastCarTime() > 2000000000){
-			carListFirstQueue.add(new Car());
-		}
-
-		Iterator<Car> iter = carListFirstQueue.iterator();
-
-		while(iter.hasNext()){
-			Car car = iter.next();
-
-			car.getCar().x += 3;
-
-			if(car.getCar().x + 90 > 700){
-				iter.remove();
-			}
-
-			if(car.getCar().intersects(frogRectangle.getFrog())) {
-				lifes--;
-				System.out.println(lifes);
-				frogRectangle.setFrogRectangleY(0);
-
-				batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY());
-				if (lifes == 0) {
-					//adicionar chamada da tela de jogar novamente
-					Gdx.app.exit();
-				}
-			}
-		}
-
-
+		whichKeyPressed();
 
 		if(winnerController !=0 ){
 			winnerFrogs.draw(winnerController);
 		}
 
-		frogRectangle.verifyFrogPosition(); //alterar depois. Recomendado que a classe render nao tenha responsabilidades que nao relacionadas a de renderização de elementos na tela
+		frogRectangle.verifyFrogPosition();
 
-		if(isFrogInFinishLine()){//alterar depois. Recomendado que a classe render nao tenha responsabilidades que nao relacionadas a de renderização de elementos na tela
+		if(isFrogInFinishLine()){
 
-			frogRectangle.setFrogRectangleX(0);
+			frogRectangle.setFrogRectangleX(300);
+
 			frogRectangle.setFrogRectangleY(0);
 
 			batch.draw(frog.getFrogSprite(lastKeyPressed),frogRectangle.getFrogRectangleX(),frogRectangle.getFrogRectangleY());
@@ -132,14 +132,14 @@ public class FroggerGame extends ApplicationAdapter {
 			batch.draw(frog.getFrogSprite(lastKeyPressed),frogRectangle.getFrogRectangleX(),frogRectangle.getFrogRectangleY());
 		};
 
-		if(this.winnerController == 5){ //condicional para acabar o jogo || alterar depois. Recomendado que a classe render nao tenha responsabilidades que nao relacionadas a de renderização de elementos na tela
+		if(this.winnerController == 5){
 			//adicionar aqui uma tela de vitória
-//			Gdx.app.exit();
+			//Gdx.app.exit();
 		}
 
 		batch.end();
 	}
-	
+
 	@Override
 	public void dispose () {
 		batch.dispose();
@@ -147,18 +147,22 @@ public class FroggerGame extends ApplicationAdapter {
 
 	private void whichKeyPressed(){
 		if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
+			frog.soundFroggerHop();
 			frogRectangle.updateFrogRectanglePositionToLeft();
 			lastKeyPressed = Input.Keys.LEFT;
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
+			frog.soundFroggerHop();
 			frogRectangle.updateFrogRectanglePositionToRight();
 			lastKeyPressed = Input.Keys.RIGHT;
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
+			frog.soundFroggerHop();
 			frogRectangle.updateFrogRectanglePositionToUp();
 			lastKeyPressed = Input.Keys.UP;
 		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
+			frog.soundFroggerHop();
 			frogRectangle.updateFrogRectanglePositionToDown();
 			lastKeyPressed = Input.Keys.DOWN;
 		}
@@ -167,10 +171,58 @@ public class FroggerGame extends ApplicationAdapter {
 	private boolean isFrogInFinishLine() {
 		if (frogRectangle.isTouchFinishLine()) {
 			this.winnerController++;
+
 			System.out.println(winnerController);
+
 			frogRectangle.setTouchFinishLine(FALSE);
+
 			return TRUE;
 		}
 		return FALSE;
+	}
+
+	private void renderCarsQueue(int yPosition, Array<Car> carList, int speed){
+
+
+		for(Car car : carList){
+			batch.draw(carList.first().getImgCar(), car.getCar().x,car.getCar().y);
+		}
+
+		if(TimeUtils.nanoTime() - Car.getLastCarTime()> 2000000000){
+			carList.add(new Car());
+			carList2.add(new Car());
+			carList3.add(new Car());
+			carList4.add(new Car());
+			carList5.add(new Car());
+		}
+
+		Iterator<Car> iter = carList.iterator();
+
+		while(iter.hasNext()){
+			Car car = iter.next();
+
+			car.getCar().x += speed;
+			car.getCar().y = yPosition;
+
+			if(car.getCar().x > 700){
+				iter.remove();
+			}
+
+			if(car.getCar().intersects(frogRectangle.getFrog())) {
+				lifes--;
+				//teste
+				System.out.println(lifes);
+
+				frog.soundFroggerSquash();
+				frogRectangle.setFrogRectangleY(0);
+
+				batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY());
+
+				if (lifes == 0) {
+					//adicionar chamada da tela de jogar novamente
+					//Gdx.app.exit();
+				}
+			}
+		}
 	}
 }
