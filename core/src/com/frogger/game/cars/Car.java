@@ -23,6 +23,7 @@ public class Car {
 
     public Car(int yPosition){
         car = new Rectangle();
+        car.x = -60;
         car.y = yPosition;
         car.width = 60;
         car.height = 40;

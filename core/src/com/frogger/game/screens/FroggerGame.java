@@ -18,6 +18,7 @@ import com.frogger.game.frogs.Frog;
 import com.frogger.game.components.RestGround;
 import com.frogger.game.frogs.WinnerFrogs;
 import com.frogger.game.rectangles.FrogRectangle;
+import com.frogger.game.trunk.Trunk;
 
 import java.util.Iterator;
 import java.util.Random;
@@ -33,14 +34,15 @@ public class FroggerGame extends ApplicationAdapter {
 	private WinnerFrogs winnerFrogs;
 	private RestGround restGround;
 	private FinishLine finishLine;
+	private Water water;
+
+	private Trunk trunk;
 
 	private TextureRegion carSprite;
 	private Array<Car> carList;
-
+	private Array<Trunk> trunkList;
 
 	private Music froggerMusic;
-
-	private Water water;
 
 	private int lastKeyPressed;
 	private int winnerController;
@@ -64,8 +66,13 @@ public class FroggerGame extends ApplicationAdapter {
 
 		frog = new Frog();
 
+		trunk = new Trunk(420);
+
 		carList = new Array<Car>();
 		carList.add(new Car(60));
+
+		trunkList = new Array<Trunk>();
+		trunkList.add(trunk);
 
 		winnerFrogs = new WinnerFrogs();
 		restGround = new RestGround();
@@ -95,6 +102,7 @@ public class FroggerGame extends ApplicationAdapter {
 		batch.draw(finishLine.getFinishLine(), 0,650);
 
 		renderCarsQueue(7);
+		renderTrunksQueue(3);
 
 		whichKeyPressed();
 
@@ -104,7 +112,6 @@ public class FroggerGame extends ApplicationAdapter {
 
 		frogRectangle.verifyFrogPosition();
 
-		isInWater();
 
 		if(isFrogInFinishLine()){
 
@@ -198,7 +205,7 @@ public class FroggerGame extends ApplicationAdapter {
 				//teste
 				System.out.println(lifes);
 
-				frog.soundFroggerSquash();
+				frog.soundFroggerHop();
 				frogRectangle.setFrogRectangleY(0);
 
 				batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY());
@@ -212,23 +219,39 @@ public class FroggerGame extends ApplicationAdapter {
 			}
 		}
 	}
-	public void isInWater(){
-		if(frogRectangle.getFrog().intersects(water.getWater())){
-			frog.soundFroggerSquash();
-			frogRectangle.setFrogRectangleY(0);
-			batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY());
 
-			System.out.println("afundou");
+	private void renderTrunksQueue(int speed) {
+		for (Trunk trunk : trunkList) {
+			batch.draw(trunk.getImgTrunk(), trunk.getTrunk().x, trunk.getTrunk().y, trunk.getTrunk().width, trunk.getTrunk().height);
+		}
 
-			System.out.println(lifes);
+		int possibleInitialPositionsY[] = new int[]{420, 480, 540, 600};
 
-			if(lifes <= 0){
-//				Gdx.app.exit();
+		Random random = new Random();
+
+		int ind = random.nextInt(possibleInitialPositionsY.length);
+
+		if (TimeUtils.nanoTime() - trunk.getLastTrunkTime() > 1000000000) {
+			trunkList.add(new Trunk(possibleInitialPositionsY[ind]));
+		}
+
+		Iterator<Trunk> iter = trunkList.iterator();
+
+		while (iter.hasNext()) {
+			Trunk trunk = iter.next();
+
+			trunk.getTrunk().x += speed;
+
+
+			if (trunk.getTrunk().contains(frogRectangle.getFrog())) {
+
+				frogRectangle.getFrog().x += speed;
+				batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY());
+
+				if (trunk.getTrunk().x > 700) {
+					iter.remove();
+				}
 			}
-
-			lifes--;
-
-
 		}
 	}
 
