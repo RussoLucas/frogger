@@ -1,20 +1,34 @@
 com/frogger/game/components/FinishLine.java
  com.frogger.game.components.FinishLine
-com/frogger/game/frogs/Frog.java
- com.frogger.game.frogs.Frog
-com/frogger/game/frogs/FrogsEnum.java
- com.frogger.game.frogs.FrogsEnum
-com/frogger/game/components/Water.java
- com.frogger.game.components.Water
-com/frogger/game/cars/Car.java
- com.frogger.game.cars.Car
-com/frogger/game/rectangles/FrogRectangle.java
- com.frogger.game.rectangles.FrogRectangle
-com/frogger/game/frogs/WinnerFrogs.java
- com.frogger.game.frogs.WinnerFrogs
+com/frogger/game/enums/CarEnum.java
+ com.frogger.game.enums.CarEnum
+com/frogger/game/components/Frog.java
+ com.frogger.game.components.Frog
+com/frogger/game/components/Trunk.java
+ com.frogger.game.components.Trunk
 com/frogger/game/components/RestGround.java
  com.frogger.game.components.RestGround
-com/frogger/game/trunk/Trunk.java
- com.frogger.game.trunk.Trunk
+com/frogger/game/enums/RestGroundEnum.java
+ com.frogger.game.enums.RestGroundEnum
+com/frogger/game/rectangles/FrogRectangle.java
+ com.frogger.game.rectangles.FrogRectangle
+com/frogger/game/enums/TurtleEnum.java
+ com.frogger.game.enums.TurtleEnum
+com/frogger/game/enums/TrunkEnum.java
+ com.frogger.game.enums.TrunkEnum
+com/frogger/game/components/Turtle.java
+ com.frogger.game.components.Turtle
+com/frogger/game/enums/FinishLineEnum.java
+ com.frogger.game.enums.FinishLineEnum
+com/frogger/game/components/Car.java
+ com.frogger.game.components.Car
+com/frogger/game/enums/FrogsEnum.java
+ com.frogger.game.enums.FrogsEnum
+com/frogger/game/components/WinnerFrogs.java
+ com.frogger.game.components.WinnerFrogs
+com/frogger/game/components/Water.java
+ com.frogger.game.components.Water
 com/frogger/game/screens/FroggerGame.java
  com.frogger.game.screens.FroggerGame
+com/frogger/game/enums/WaterEnum.java
+ com.frogger.game.enums.WaterEnum

@@ -4,21 +4,21 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.frogger.game.cars.Car;
+import com.frogger.game.components.Car;
 import com.frogger.game.components.FinishLine;
 import com.frogger.game.components.Water;
-import com.frogger.game.frogs.Frog;
+import com.frogger.game.components.Frog;
 import com.frogger.game.components.RestGround;
-import com.frogger.game.frogs.WinnerFrogs;
+import com.frogger.game.components.WinnerFrogs;
 import com.frogger.game.rectangles.FrogRectangle;
-import com.frogger.game.trunk.Trunk;
+import com.frogger.game.components.Trunk;
+import com.frogger.game.components.Turtle;
 
 import java.util.Iterator;
 import java.util.Random;
@@ -37,10 +37,12 @@ public class FroggerGame extends ApplicationAdapter {
 	private Water water;
 
 	private Trunk trunk;
+	private Turtle turtle;
 
 	private TextureRegion carSprite;
 	private Array<Car> carList;
 	private Array<Trunk> trunkList;
+	private Array<Turtle> turtleList;
 
 	private Music froggerMusic;
 
@@ -48,6 +50,9 @@ public class FroggerGame extends ApplicationAdapter {
 	private int winnerController;
 
 	private FrogRectangle frogRectangle;
+
+	private int isOnTrunk;
+	private int isOnTurtle;
 
 	private int lifes;
 
@@ -67,12 +72,18 @@ public class FroggerGame extends ApplicationAdapter {
 		frog = new Frog();
 
 		trunk = new Trunk(420);
+		turtle = new Turtle(480);
 
 		carList = new Array<Car>();
 		carList.add(new Car(60));
 
+		turtleList = new Array<Turtle>();
+		turtleList.add(turtle);
+		isOnTurtle = 0;
+
 		trunkList = new Array<Trunk>();
 		trunkList.add(trunk);
+		isOnTrunk = 0;
 
 		winnerFrogs = new WinnerFrogs();
 		restGround = new RestGround();
@@ -88,10 +99,13 @@ public class FroggerGame extends ApplicationAdapter {
 		ScreenUtils.clear(0, 0, 0, 0);
 		camera.update();
 
+
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
 
+
+		System.out.println("PosY" + frogRectangle.getFrog().y);
 		batch.draw(restGround.getRestGround(),0,0);
 		batch.draw(restGround.getRestGround(),350,0);
 		batch.draw(restGround.getRestGround(),0,355);
@@ -101,7 +115,10 @@ public class FroggerGame extends ApplicationAdapter {
 
 		batch.draw(finishLine.getFinishLine(), 0,650);
 
-		renderCarsQueue(7);
+		renderCarsQueue(6);
+
+		renderTurtleQueue(3);
+
 		renderTrunksQueue(3);
 
 		whichKeyPressed();
@@ -111,7 +128,6 @@ public class FroggerGame extends ApplicationAdapter {
 		}
 
 		frogRectangle.verifyFrogPosition();
-
 
 		if(isFrogInFinishLine()){
 
@@ -128,6 +144,22 @@ public class FroggerGame extends ApplicationAdapter {
 			//adicionar aqui uma tela de vitória
 			//Gdx.app.exit();
 		}
+
+		System.out.println(isOnTrunk);
+		System.out.println(isOnTurtle);
+
+
+//		if( isOnTurtle == 0 && isOnTrunk == 0) {
+//
+//			frogRectangle.setFrogRectangleX(300);
+//
+//			frogRectangle.setFrogRectangleY(0);
+//
+//			batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY(), 40, 40);
+//		}
+//
+//		isOnTurtle = 0;
+//		isOnTrunk = 0;
 
 		batch.end();
 	}
@@ -204,7 +236,6 @@ public class FroggerGame extends ApplicationAdapter {
 
 				//teste
 				System.out.println(lifes);
-
 				frog.soundFroggerHop();
 				frogRectangle.setFrogRectangleY(0);
 
@@ -225,13 +256,13 @@ public class FroggerGame extends ApplicationAdapter {
 			batch.draw(trunk.getImgTrunk(), trunk.getTrunk().x, trunk.getTrunk().y, trunk.getTrunk().width, trunk.getTrunk().height);
 		}
 
-		int possibleInitialPositionsY[] = new int[]{420, 480, 540, 600};
+		int possibleInitialPositionsY[] = new int[]{420, 540};
 
 		Random random = new Random();
 
 		int ind = random.nextInt(possibleInitialPositionsY.length);
 
-		if (TimeUtils.nanoTime() - trunk.getLastTrunkTime() > 1000000000) {
+		if (TimeUtils.nanoTime() - trunk.getLastTrunkTime() > 1300000000) {
 			trunkList.add(new Trunk(possibleInitialPositionsY[ind]));
 		}
 
@@ -242,15 +273,59 @@ public class FroggerGame extends ApplicationAdapter {
 
 			trunk.getTrunk().x += speed;
 
-
 			if (trunk.getTrunk().contains(frogRectangle.getFrog())) {
 
+//				water.setOnTrunk(TRUE);
+
 				frogRectangle.getFrog().x += speed;
+
 				batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY());
 
 				if (trunk.getTrunk().x > 700) {
 					iter.remove();
 				}
+
+				isOnTrunk = 1;
+
+			}
+		}
+	}
+
+	private void renderTurtleQueue(int speed)      {
+		for (Turtle turtle : turtleList) {
+			batch.draw(turtle.getImgTurtle(), turtle.getTurtle().x, turtle.getTurtle().y, turtle.getTurtle().width, turtle.getTurtle().height);
+		}
+
+		int possibleInitialPositionsY[] = new int[]{480, 600};
+
+		Random random = new Random();
+
+		int ind = random.nextInt(possibleInitialPositionsY.length);
+
+		if (TimeUtils.nanoTime() - turtle.getLastTurtleTime() > 900000000) {
+			turtleList.add(new Turtle(possibleInitialPositionsY[ind]));
+		}
+
+		Iterator<Turtle> iter = turtleList.iterator();
+
+		while (iter.hasNext()) {
+			Turtle turtle = iter.next();
+
+			turtle.getTurtle().x -= speed;
+
+
+			if (turtle.getTurtle().contains(frogRectangle.getFrog())) {
+
+//				water.setOnTurtle(TRUE);
+
+				frogRectangle.getFrog().x -= speed;
+				batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY());
+
+				if (turtle.getTurtle().x < 0) {
+					iter.remove();
+				}
+				isOnTurtle = 1;
+
 			}
 		}
 	}

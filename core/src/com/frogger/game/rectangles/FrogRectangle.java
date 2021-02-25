@@ -2,8 +2,8 @@ package com.frogger.game.rectangles;
 
 import java.awt.*;
 
-import static com.frogger.game.frogs.FrogsEnum.FROG_HEIGHT;
-import static com.frogger.game.frogs.FrogsEnum.FROG_WIDTH;
+import static com.frogger.game.enums.FrogsEnum.FROG_HEIGHT;
+import static com.frogger.game.enums.FrogsEnum.FROG_WIDTH;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -42,6 +42,7 @@ public class FrogRectangle {
     public void updateFrogRectanglePositionToDown(){
         frog.y = frog.y - 60;
     }
+
     public void verifyFrogPosition(){
         if(frog.x <=0){
             frog.x = 0;
