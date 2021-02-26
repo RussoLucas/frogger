@@ -18,11 +18,15 @@ public class Frog {
 
     private Sound froggerHop;
     private Sound froggerPlunk;
+    private Sound froggerSquash;
+    private Sound froggerExtra;
 
     public Frog(){
 
         this.froggerHop = Gdx.audio.newSound(Gdx.files.internal("sounds/sound-frogger-hop.wav"));
         this.froggerPlunk = Gdx.audio.newSound(Gdx.files.internal("sounds/sound-frogger-plunk.wav"));
+        this.froggerSquash = Gdx.audio.newSound(Gdx.files.internal("sounds/sound-frogger-squash.wav"));
+        this.froggerExtra = Gdx.audio.newSound(Gdx.files.internal("sounds/sound-frogger-extra.wav"));
 
         this.frogImg = new Texture("frog.png");
 
@@ -46,10 +50,14 @@ public class Frog {
             return frogSpriteUp;
     }
      public void soundFroggerHop(){
-         froggerHop.play(0.4f);
+         froggerHop.play(.4f);
      }
 
-     public void soundFroggerSquash(){
-        froggerPlunk.play(0.1f);
+     public void soundFroggerPlunk(){
+        froggerPlunk.play(.4f);
      }
+
+     public void soundFroggerSquash() { froggerSquash.play(.4f);}
+
+     public void soundFroggerExtra(){ froggerExtra.play(1f);}
 }

@@ -40,4 +40,5 @@ public class Trunk {
     public static long getLastTrunkTime() {
         return lastTrunkTime;
     }
+
 }
