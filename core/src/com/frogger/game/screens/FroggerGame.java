@@ -1,9 +1,8 @@
 package com.frogger.game.screens;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -18,22 +17,25 @@ import static com.frogger.game.enums.FrogsEnum.FROG_HEIGHT;
 import static com.frogger.game.enums.FrogsEnum.FROG_WIDTH;
 import static java.lang.Boolean.*;
 
-public class FroggerGame extends ApplicationAdapter {
+public class FroggerGame extends Game {
 
-	SpriteBatch batch;
+	private SpriteBatch batch;
 	private OrthographicCamera camera;
+	private FroggerGame game;
 
 	private Frog frog;
 	private WinnerFrogs winnerFrogs;
 	private RestGround restGround;
 	private FinishLine finishLine;
-	private Water water;
+	private FroggerTitle froggerTitle;
 
+	private Water water;
 	private Trunk trunk;
 	private Turtle turtle;
 
 	private Array<Car> carList;
 	private Array<Trunk> trunkList;
+
 	private Array<Turtle> turtleList;
 
 	private int lastKeyPressed;
@@ -43,20 +45,31 @@ public class FroggerGame extends ApplicationAdapter {
 
 	private Music music;
 
+	private int turtleSpeed;
+	private int carSpeed;
+	private int trunkSpeed;
+
+	private BitmapFont textLife;
+	private BitmapFont textPoints;
+
+	private int points;
+
 	private int lifes;
 
 	@Override
 	public void create () {
 
 		this.frogRectangle = new FrogRectangle();
-
 		batch = new SpriteBatch();
 
 		camera = new OrthographicCamera();
 
 		camera.setToOrtho(false,700,700);
 
-		music = new Music();
+		textLife = new BitmapFont();
+		textPoints = new BitmapFont();
+
+//		music = new Music();
 
 		frog = new Frog();
 
@@ -65,16 +78,21 @@ public class FroggerGame extends ApplicationAdapter {
 
 		carList = new Array<Car>();
 		carList.add(new Car(60));
+		carSpeed = 6;
 
 		turtleList = new Array<Turtle>();
 		turtleList.add(turtle);
+		turtleSpeed = 3;
 
 		trunkList = new Array<Trunk>();
 		trunkList.add(trunk);
+		trunkSpeed = 3;
 
 		winnerFrogs = new WinnerFrogs();
 		restGround = new RestGround();
 		finishLine = new FinishLine();
+		froggerTitle = new FroggerTitle();
+
 		water = new Water();
 
 		this.winnerController = 0;
@@ -91,6 +109,9 @@ public class FroggerGame extends ApplicationAdapter {
 
 		batch.begin();
 
+		textLife.draw(batch, "VIDAS: " + lifes, 20, 770);
+		textPoints.draw(batch,"PONTOS: " + points,20,750);
+
 		batch.draw(restGround.getRestGround(),0,0);
 		batch.draw(restGround.getRestGround(),350,0);
 		batch.draw(restGround.getRestGround(),0,355);
@@ -100,11 +121,13 @@ public class FroggerGame extends ApplicationAdapter {
 
 		batch.draw(finishLine.getFinishLine(), 0,650);
 
-		renderCarsQueue(6);
+		batch.draw(froggerTitle.getFroggerTitle(), 200,735 );
 
-		renderTurtleQueue(3);
+		renderCarsQueue(carSpeed);
 
-		renderTrunksQueue(3);
+		renderTurtleQueue(turtleSpeed);
+
+		renderTrunksQueue(trunkSpeed);
 
 		whichKeyPressed();
 
@@ -115,6 +138,14 @@ public class FroggerGame extends ApplicationAdapter {
 		frogRectangle.verifyFrogPosition();
 
 		if(isFrogInFinishLine()){
+
+			carSpeed += 2;
+			trunkSpeed ++;
+			turtleSpeed ++;
+
+			points += lifes * 1000;
+
+			lifes--;
 
 			frogRectangle.setFrogRectangleX(300);
 
@@ -140,6 +171,8 @@ public class FroggerGame extends ApplicationAdapter {
 		boolean isFrogOnWater = (frogRectangle.getFrog().y > 400 && !isFrogOnTrunk && !isFrogOnTurtle);
 
 		if( isFrogOnWater){
+			lifes--;
+
 			frog.soundFroggerPlunk();
 
 			frogRectangle.setFrogRectangleX(300);
@@ -149,9 +182,11 @@ public class FroggerGame extends ApplicationAdapter {
 			batch.draw(frog.getFrogSprite(lastKeyPressed),frogRectangle.getFrogRectangleX(),frogRectangle.getFrogRectangleY(),FROG_WIDTH.getValue(),FROG_HEIGHT.getValue());
 		}
 
-		if(this.winnerController == 5){
-			//adicionar aqui uma tela de vitória
+
+		if (lifes == 0 && points == 0) {
 			//Gdx.app.exit();
+		}else if(lifes == 0){
+			System.out.println("vitoria");
 		}
 
 		batch.end();
@@ -233,11 +268,6 @@ public class FroggerGame extends ApplicationAdapter {
 
 				batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY());
 
-				if (lifes <= 0) {
-					//adicionar chamada da tela de jogar novamente
-					//Gdx.app.exit();
-				}
-
 				lifes--;
 			}
 		}
@@ -312,5 +342,9 @@ public class FroggerGame extends ApplicationAdapter {
 				}
 			}
 		}
+	}
+
+	public SpriteBatch getBatch() {
+		return batch;
 	}
 }
