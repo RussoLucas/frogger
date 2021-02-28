@@ -2,12 +2,11 @@ package com.frogger.game.components;
 
 import static com.frogger.game.enums.WaterEnum.WATER_HEIGHT;
 import static com.frogger.game.enums.WaterEnum.WATER_WIDTH;
-import static java.lang.Boolean.*;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.awt.*;
 
-public class Water {
+public class Water extends ImmutableComponents {
     private Texture imgWater;
 
     private Rectangle water;
@@ -24,6 +23,11 @@ public class Water {
 
         imgWater = new Texture("water.jpg");
 
+    }
+
+    @Override
+    public Texture getTexture() {
+        return imgWater;
     }
 
     public Texture getImgWater() {

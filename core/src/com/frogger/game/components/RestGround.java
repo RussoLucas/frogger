@@ -2,7 +2,7 @@ package com.frogger.game.components;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class RestGround {
+public class RestGround extends ImmutableComponents {
 
     private Texture restGround;
 
@@ -10,7 +10,8 @@ public class RestGround {
         this.restGround = new Texture("rest-ground.png");
     }
 
-    public Texture getRestGround() {
+    @Override
+    public Texture getTexture() {
         return restGround;
     }
 }

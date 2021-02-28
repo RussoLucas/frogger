@@ -1,9 +1,9 @@
 com/frogger/game/enums/FrogsEnum.java
  com.frogger.game.enums.FrogsEnum
+com/frogger/game/components/ImmutableComponents.java
+ com.frogger.game.components.ImmutableComponents
 com/frogger/game/enums/FinishLineEnum.java
  com.frogger.game.enums.FinishLineEnum
-com/frogger/game/components/FrogBackgroundInitialScreen.java
- com.frogger.game.components.FrogBackgroundInitialScreen
 com/frogger/game/enums/TrunkEnum.java
  com.frogger.game.enums.TrunkEnum
 com/frogger/game/enums/CarEnum.java
@@ -12,12 +12,10 @@ com/frogger/game/components/Water.java
  com.frogger.game.components.Water
 com/frogger/game/components/Turtle.java
  com.frogger.game.components.Turtle
-com/frogger/game/components/Frog.java
- com.frogger.game.components.Frog
 com/frogger/game/components/FroggerTitle.java
  com.frogger.game.components.FroggerTitle
-com/frogger/game/enums/WaterEnum.java
- com.frogger.game.enums.WaterEnum
+com/frogger/game/components/Frog.java
+ com.frogger.game.components.Frog
 com/frogger/game/enums/RestGroundEnum.java
  com.frogger.game.enums.RestGroundEnum
 com/frogger/game/components/FinishLine.java
@@ -30,13 +28,15 @@ com/frogger/game/rectangles/FrogRectangle.java
  com.frogger.game.rectangles.FrogRectangle
 com/frogger/game/components/Trunk.java
  com.frogger.game.components.Trunk
+com/frogger/game/components/GameOver.java
+ com.frogger.game.components.GameOver
 com/frogger/game/enums/TurtleEnum.java
  com.frogger.game.enums.TurtleEnum
 com/frogger/game/components/RestGround.java
  com.frogger.game.components.RestGround
 com/frogger/game/components/Car.java
  com.frogger.game.components.Car
-com/frogger/game/screens/InitialScreen.java
- com.frogger.game.screens.InitialScreen
+com/frogger/game/enums/WaterEnum.java
+ com.frogger.game.enums.WaterEnum
 com/frogger/game/screens/FroggerGame.java
  com.frogger.game.screens.FroggerGame

@@ -21,7 +21,6 @@ public class FroggerGame extends Game {
 
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
-	private FroggerGame game;
 
 	private Frog frog;
 	private WinnerFrogs winnerFrogs;
@@ -51,10 +50,13 @@ public class FroggerGame extends Game {
 
 	private BitmapFont textLife;
 	private BitmapFont textPoints;
+	private BitmapFont textEndGame;
 
 	private int points;
 
 	private int lifes;
+
+	private Boolean gameOver;
 
 	@Override
 	public void create () {
@@ -68,8 +70,9 @@ public class FroggerGame extends Game {
 
 		textLife = new BitmapFont();
 		textPoints = new BitmapFont();
+		textEndGame = new BitmapFont();
 
-//		music = new Music();
+		music = new Music();
 
 		frog = new Frog();
 
@@ -95,6 +98,8 @@ public class FroggerGame extends Game {
 
 		water = new Water();
 
+		gameOver = false;
+
 		this.winnerController = 0;
 		this.lifes = 5;
 	}
@@ -109,86 +114,101 @@ public class FroggerGame extends Game {
 
 		batch.begin();
 
-		textLife.draw(batch, "VIDAS: " + lifes, 20, 770);
-		textPoints.draw(batch,"PONTOS: " + points,20,750);
+		if(!gameOver) {
+			textLife.draw(batch, "VIDAS: " + lifes, 20, 770);
+			textPoints.draw(batch, "PONTOS: " + points, 20, 750);
 
-		batch.draw(restGround.getRestGround(),0,0);
-		batch.draw(restGround.getRestGround(),350,0);
-		batch.draw(restGround.getRestGround(),0,355);
-		batch.draw(restGround.getRestGround(),350,355);
+			batch.draw(restGround.getTexture(), 0, 0);
+			batch.draw(restGround.getTexture(), 350, 0);
+			batch.draw(restGround.getTexture(), 0, 355);
+			batch.draw(restGround.getTexture(), 350, 355);
 
-		batch.draw(water.getImgWater(),water.getWater().x,water.getWater().y,water.getWater().width,water.getWater().height);
+			batch.draw(water.getTexture(), water.getWater().x, water.getWater().y, water.getWater().width, water.getWater().height);
 
-		batch.draw(finishLine.getFinishLine(), 0,650);
+			batch.draw(finishLine.getTexture(), 0, 650);
 
-		batch.draw(froggerTitle.getFroggerTitle(), 200,735 );
+			batch.draw(froggerTitle.getTexture(), 200, 735);
 
-		renderCarsQueue(carSpeed);
+			renderCarsQueue(carSpeed);
 
-		renderTurtleQueue(turtleSpeed);
+			renderTurtleQueue(turtleSpeed);
 
-		renderTrunksQueue(trunkSpeed);
+			renderTrunksQueue(trunkSpeed);
 
-		whichKeyPressed();
+			whichKeyPressed();
 
-		if(winnerController !=0 ){
-			winnerFrogs.draw(winnerController);
-		}
+			if (winnerController != 0) {
+				winnerFrogs.draw(winnerController);
+			}
 
-		frogRectangle.verifyFrogPosition();
+			frogRectangle.verifyFrogPosition();
 
-		if(isFrogInFinishLine()){
+			if (isFrogInFinishLine()) {
 
-			carSpeed += 2;
-			trunkSpeed ++;
-			turtleSpeed ++;
+				carSpeed += 2;
+				trunkSpeed++;
+				turtleSpeed++;
 
-			points += lifes * 1000;
+				points += lifes * 1000;
 
-			lifes--;
+				lifes--;
 
-			frogRectangle.setFrogRectangleX(300);
+				frogRectangle.setFrogRectangleX(300);
 
-			frogRectangle.setFrogRectangleY(0);
+				frogRectangle.setFrogRectangleY(0);
 
-			batch.draw(frog.getFrogSprite(lastKeyPressed),frogRectangle.getFrogRectangleX(),frogRectangle.getFrogRectangleY(),FROG_WIDTH.getValue(),FROG_HEIGHT.getValue());
+				batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY(), FROG_WIDTH.getValue(), FROG_HEIGHT.getValue());
+			} else {
+				batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY(), FROG_WIDTH.getValue(), FROG_HEIGHT.getValue());
+			}
+
+			for (Trunk trunk : trunkList) {
+				if (trunk.getTrunk().contains(frogRectangle.getFrog())) {
+					isFrogOnTrunk = true;
+				}
+			}
+
+			for (Turtle turtle : turtleList) {
+				if (turtle.getTurtle().contains(frogRectangle.getFrog())) {
+					isFrogOnTurtle = true;
+				}
+			}
+
+			boolean isFrogOnWater = (frogRectangle.getFrog().y > 400 && !isFrogOnTrunk && !isFrogOnTurtle);
+
+			if (isFrogOnWater) {
+				lifes--;
+
+				frog.soundFroggerPlunk();
+
+				frogRectangle.setFrogRectangleX(300);
+
+				frogRectangle.setFrogRectangleY(0);
+
+				batch.draw(frog.getFrogSprite(lastKeyPressed), frogRectangle.getFrogRectangleX(), frogRectangle.getFrogRectangleY(), FROG_WIDTH.getValue(), FROG_HEIGHT.getValue());
+			}
+
+
+			if(lifes == 0){
+				gameOver = true;
+			}
 		}else{
-			batch.draw(frog.getFrogSprite(lastKeyPressed),frogRectangle.getFrogRectangleX(),frogRectangle.getFrogRectangleY(),FROG_WIDTH.getValue(),FROG_HEIGHT.getValue());
-		}
+			textEndGame.draw(batch,"Parabéns. Voce finalizou o jogo !", 265, 470);
+			textEndGame.draw(batch, "Pontuação:  "+points,330,420);
+			textEndGame.draw(batch,"Para jogar novamente pressione ENTER",5,60);
+			textEndGame.draw(batch,"Para sair pressione ESC",5,30);
 
-		for (Trunk trunk: trunkList) {
-			if(trunk.getTrunk().contains(frogRectangle.getFrog())){
-				isFrogOnTrunk = true;
+			if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
+				gameOver = false;
+				lifes = 5;
+				points = 0;
+				carSpeed = 6;
+				trunkSpeed = 3;
+				turtleSpeed = 3;
+			}else if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+				Gdx.app.exit();
 			}
 		}
-
-		for (Turtle turtle: turtleList){
-			if(turtle.getTurtle().contains(frogRectangle.getFrog())){
-				isFrogOnTurtle = true;
-			}
-		}
-
-		boolean isFrogOnWater = (frogRectangle.getFrog().y > 400 && !isFrogOnTrunk && !isFrogOnTurtle);
-
-		if( isFrogOnWater){
-			lifes--;
-
-			frog.soundFroggerPlunk();
-
-			frogRectangle.setFrogRectangleX(300);
-
-			frogRectangle.setFrogRectangleY(0);
-
-			batch.draw(frog.getFrogSprite(lastKeyPressed),frogRectangle.getFrogRectangleX(),frogRectangle.getFrogRectangleY(),FROG_WIDTH.getValue(),FROG_HEIGHT.getValue());
-		}
-
-
-		if (lifes == 0 && points == 0) {
-			//Gdx.app.exit();
-		}else if(lifes == 0){
-			System.out.println("vitoria");
-		}
-
 		batch.end();
 	}
 
